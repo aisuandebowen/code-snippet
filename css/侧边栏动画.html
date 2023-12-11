@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>侧边栏动画</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.7.2/vue.min.js"></script>
+    <style>
+      html,
+      body,
+      #app {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      #app {
+        display: flex;
+      }
+
+      button {
+        height: 200px;
+        flex-basis: auto;
+        flex-grow: 0;
+        flex-shrink: 1;
+      }
+      .left {
+        width: 200px;
+        height: 100%;
+        background-color: antiquewhite;
+      }
+
+      .left-show {
+        animation: left-show .1s forwards;
+      }
+
+      .left-close {
+        animation: left-close .1s forwards;
+      }
+
+      @keyframes left-show {
+        0% {
+          transform: translateX(-100%);
+        }
+
+        100% {
+          transform: translateX(0%);
+        }
+      }
+
+      @keyframes left-close {
+        0% {
+          transform: translateX(0%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div :class=['left',left?'left-show':'left-close']>{{msg}}</div>
+      <button @click="left = !left">close</button>
+      {{left}}
+    </div>
+  </body>
+
+  <script>
+    const app = new Vue({
+      data() {
+        return { msg: "侧边栏动画", left: true };
+      },
+    }).$mount("#app");
+  </script>
+</html>
