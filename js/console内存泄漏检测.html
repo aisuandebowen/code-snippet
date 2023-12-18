@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>console内存泄漏检测</title>
+    <style>
+      #btn {
+        width: 100px;
+        height: 100px;
+        background-color: aquamarine;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="btn">点点点</button>
+    <ul id="ul"></ul>
+
+    <script>
+      const ul = document.getElementById("ul");
+      const btn = document.getElementById("btn");
+
+      function createLi(str = "空") {
+        const li = document.createElement("li");
+        li.innerHTML = str;
+        ul.appendChild(li);
+      }
+
+      /**
+       * 结果表明：console.log在打开devtools时会占用内存，但未打开时不占用内存
+       */
+      btn.addEventListener("click", () => {
+        setInterval(() => {
+          const memory = {
+            total: performance.memory.totalJSHeapSize,
+            str: "g".repeat(100000),
+          };
+          console.log(memory); // 此处用于测试
+          createLi(memory.total);
+        }, 50);
+      });
+    </script>
+  </body>
+</html>
