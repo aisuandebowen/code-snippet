@@ -1,17 +1,23 @@
 /**
  * AST语法树删除console.log
  */
-module.exports = {
-  visitor: {
-    ExpressionStatement(path) {
-      try {
-        const { object, property } = path.node.expression.callee;
-        if (object.name === "console" || property.name === "log") {
-          path.remove();
+module.exports = function () {
+  return {
+    visitor: {
+      ExpressionStatement(path) {
+        const callee = path.node.expression.callee;
+        if (callee) {
+          const { object, property } = callee;
+          if (
+            object &&
+            property &&
+            object.name === 'console' &&
+            property.name === 'log'
+          ) {
+            path.remove();
+          }
         }
-      } catch (error) {
-        console.log(error);
-      }
+      },
     },
-  },
+  };
 };
