@@ -1,0 +1,3 @@
+#!/usr/bin/env node
+const checkConsole = require("../../hooks/checkConsole/index");
+checkConsole();
