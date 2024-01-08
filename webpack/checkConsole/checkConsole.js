@@ -12,16 +12,27 @@ function collectLogNum(folder) {
   const transformCode = core.parse(code, {
     sourceType: "unambiguous",
   });
-  const consolePaths = [];
+  let sum = 0;
+  const locArr = [];
   core.traverse(transformCode, {
     ExpressionStatement(path) {
       const { object, property } = path.node.expression.callee || {};
       if (object?.name === "console" && property?.name === "log") {
-        consolePaths.push(path);
+        locArr.push(object.loc.start);
+        sum += 1;
       }
     },
   });
-  return consolePaths.length;
+
+  if (sum > 0) {
+    return {
+      sum,
+      path: folder,
+      locArr,
+    };
+  } else {
+    return null;
+  }
 }
 
 /**
@@ -30,18 +41,20 @@ function collectLogNum(folder) {
  * @returns {Object}
  */
 function checkConsole(folders) {
-  let sum = 0;
+  const errorFolders = [];
   if (isArray(folders)) {
     folders.forEach((folder) => {
-      sum += collectLogNum(folder);
+      const obj = collectLogNum(folder);
+      obj && errorFolders.push(obj);
     });
   } else if (isString(folders)) {
-    sum = collectLogNum(folders);
+    const obj = collectLogNum(folder);
+    obj && errorFolders.push(obj);
   }
 
   return {
-    flag: sum > 0,
-    sum,
+    flag: errorFolders.length > 0,
+    errorFolders,
   };
 }
 
