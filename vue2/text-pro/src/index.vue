@@ -4,9 +4,46 @@
  */
 import props from './props';
 import isNumber from '@path/common/tools/type-utils/isNumber';
+import { getLineHeight } from './utils';
 export default {
   name: 'TextPro',
   props,
+  data() {
+    return {
+      contentStyle: {}, // 溢出文本样式
+      tooltip: undefined, // 是否打开tooltip
+    };
+  },
+  render() {
+    const { tip, tipText } = this.$props;
+    const text = this.$slots.default;
+
+    /** 默认文本 */
+    const defaultCom = (text) => {
+      const props = {
+        class: 'text-pro',
+        style: this.contentStyle,
+        ref: 'piter',
+      };
+      return <span {...props}>{text}</span>;
+    };
+    /** 支持溢出省略、Tooltip的文本 */
+    const tooltipText = (text) => {
+      const slots = {
+        title: () => <span>{tipText || text}</span>,
+      };
+      return <a-tooltip scopedSlots={slots}>{defaultCom(text)}</a-tooltip>;
+    };
+
+    if (tip && this.tooltip) {
+      return tooltipText(text);
+    } else {
+      return defaultCom(text);
+    }
+  },
+  mounted() {
+    this.resetCSS();
+  },
   methods: {
     /**
      * 获取文本样式
@@ -44,35 +81,27 @@ export default {
         return {};
       }
     },
-  },
-  render() {
-    const { tip, tipText, textDecoration, ellipsis, ellipsisNum } = this.$props;
-    const text = this.$slots.default;
-
-    /** 默认文本 */
-    const defaultCom = (text, style = {}) => {
-      const props = {
-        class: 'text-pro',
-        style,
-      };
-      return <p {...props}>{text}</p>;
-    };
-    /** 支持溢出省略、Tooltip的文本 */
-    const tooltipText = (text) => {
-      const slots = {
-        title: () => <p>{tipText || text}</p>,
-      };
-      const textStyle = this.getStyle(ellipsis, ellipsisNum, textDecoration);
-      return (
-        <a-tooltip scopedSlots={slots}>{defaultCom(text, textStyle)}</a-tooltip>
-      );
-    };
-
-    if (tip) {
-      return tooltipText(text);
-    } else {
-      return defaultCom(text);
-    }
+    /**
+     * 更新CSS，处理溢出问题
+     */
+    resetCSS() {
+      const dom = this.$refs.piter;
+      const lineHeight = getLineHeight(dom);
+      const realHeight = dom.getBoundingClientRect().height;
+      if (realHeight > lineHeight * this.ellipsisNum) {
+        // 真实情况已换行，加css
+        const { textDecoration, ellipsis, ellipsisNum } = this.$props;
+        this.contentStyle = this.getStyle(
+          ellipsis,
+          ellipsisNum,
+          textDecoration,
+        );
+        this.tooltip = true;
+      } else {
+        // 没有自动换行，就不加css
+        this.tooltip = false;
+      }
+    },
   },
 };
 </script>
@@ -82,5 +111,11 @@ export default {
   display: inline-block;
   width: auto;
   max-width: 100%;
+
+  p {
+    word-break: normal;
+    white-space: pre-warp;
+    word-wrap: break-word;
+  }
 }
-</style>
+</style
