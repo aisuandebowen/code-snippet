@@ -18,26 +18,31 @@ function styleToString(style) {
  * @param {HTMLElement} origin
  */
 function resetDomStyles(target, origin) {
-  target.setAttribute('aria-hidden', 'true');
-  const originStyle = window.getComputedStyle(origin);
-  const originCSS = styleToString(originStyle);
-  // Set shadow
-  target.setAttribute('style', originCSS);
-  target.style.position = 'fixed';
-  target.style.left = '0';
-  target.style.height = 'auto';
-  target.style.minHeight = 'auto';
-  target.style.maxHeight = 'auto';
-  target.style.paddingTop = '0';
-  target.style.paddingBottom = '0';
-  target.style.borderTopWidth = '0';
-  target.style.borderBottomWidth = '0';
-  target.style.top = '-999999px';
-  target.style.zIndex = '-1000';
-  // clean up css overflow
-  target.style.textOverflow = 'clip';
-  target.style.whiteSpace = 'normal';
-  target.style.webkitLineClamp = 'none';
+  try {
+    target.setAttribute('aria-hidden', 'true');
+    const originStyle = window.getComputedStyle(origin);
+    const originCSS = styleToString(originStyle);
+    // Set shadow
+    target.setAttribute('style', originCSS);
+    target.style.position = 'fixed';
+    target.style.left = '0';
+    target.style.height = 'auto';
+    target.style.minHeight = 'auto';
+    target.style.maxHeight = 'auto';
+    target.style.paddingTop = '0';
+    target.style.paddingBottom = '0';
+    target.style.borderTopWidth = '0';
+    target.style.borderBottomWidth = '0';
+    target.style.top = '-999999px';
+    target.style.zIndex = '-1000';
+    // clean up css overflow
+    target.style.textOverflow = 'clip';
+    target.style.whiteSpace = 'normal';
+    target.style.webkitLineClamp = 'none';
+  } catch (error) {
+    console.error(error);
+    console.log(origin);
+  }
 }
 
 /**
