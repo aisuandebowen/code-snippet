@@ -14,9 +14,19 @@ export default {
       tooltip: undefined, // 是否打开tooltip
     };
   },
+  watch: {
+    text: {
+      handler(newV) {
+        this.contentStyle = {};
+        this.$nextTick(() => {
+          this.resetCSS();
+        });
+      },
+      deep: true,
+    },
+  },
   render() {
-    const { tip, tipText } = this.$props;
-    const text = this.$slots.default;
+    const { tip, tipText, text } = this.$props;
 
     /** 默认文本 */
     const defaultCom = (text) => {
@@ -42,6 +52,7 @@ export default {
     }
   },
   mounted() {
+    this.contentStyle = {};
     this.resetCSS();
   },
   methods: {
@@ -118,4 +129,4 @@ export default {
     word-wrap: break-word;
   }
 }
-</style
+</style>
