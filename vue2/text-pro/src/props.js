@@ -4,6 +4,11 @@ export default {
     default: false,
     type: Boolean,
   },
+  // 文本内容
+  text: {
+    default: '',
+    type: String,
+  },
   // toolTip文本
   tipText: {
     default: '',
